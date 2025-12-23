@@ -6,17 +6,19 @@ A Editor like experience for mobile content and layout building.
 
 First iteration will work with the WordPress API and editor to give a better way to edit on mobile devices.
 
----
-WIP
+## WIP
 
-Screen 1
-<img width="445" height="913" alt="editor-screen" src="https://github.com/user-attachments/assets/bad9cec2-4b83-447e-9a77-62492752ca65" />
+### Screen 1
 
-Post Settings
-<img width="446" height="907" alt="editor-post-settings" src="https://github.com/user-attachments/assets/2585c102-63e6-4a43-b811-73befb242579" />
+<img width="200" alt="editor-screen" src="https://github.com/user-attachments/assets/bad9cec2-4b83-447e-9a77-62492752ca65" />
 
-Block Settings
-<img width="450" height="902" alt="editor-block-settings" src="https://github.com/user-attachments/assets/cf599a8d-9735-4fb8-b623-7eade6c49b97" />
+### Post Settings
+
+<img width="200" alt="editor-post-settings" src="https://github.com/user-attachments/assets/2585c102-63e6-4a43-b811-73befb242579" />
+
+### Block Settings
+
+<img width="200" alt="editor-block-settings" src="https://github.com/user-attachments/assets/cf599a8d-9735-4fb8-b623-7eade6c49b97" />
 
 ---
 
