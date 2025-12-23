@@ -63,11 +63,9 @@ flutter doctor
 
 ## Getting Started
 
-Clone the repo and install dependencies
+After cloning the repo, install dependencies
 
 ```bash
-git clone <YOUR_REPO_URL>
-cd <repo-name>
 flutter pub get
 ```
 
