@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../wp_api/models/wp_post_type.dart';
 import 'models/wp_block.dart';
 import 'models/wp_document.dart';
 import 'models/wp_block_path.dart';
@@ -11,7 +12,14 @@ import 'wp_api/providers.dart';
 import 'widgets/editor_inspector_panel.dart';
 
 class EditorScreen extends ConsumerStatefulWidget {
-  const EditorScreen({super.key});
+  const EditorScreen({
+    super.key,
+    required this.postType,
+    required this.postId,
+  });
+
+  final WpPostType postType;
+  final int postId;
 
   @override
   ConsumerState<EditorScreen> createState() => _EditorScreenState();
@@ -19,10 +27,12 @@ class EditorScreen extends ConsumerStatefulWidget {
 
 class _EditorScreenState extends ConsumerState<EditorScreen> {
   late final ProviderSubscription<AsyncValue<WpDocument>> _docSub;
+
   @override
   void initState() {
     super.initState();
 
+    // ✅ Listen to the document for this specific (postType, postId)
     _docSub = ref.listenManual<AsyncValue<WpDocument>>(
       initialDocumentProvider,
       (prev, next) {
@@ -41,7 +51,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final docAsync = ref.watch(initialDocumentProvider);
+    // ✅ Watch the document for this specific (postType, postId)
+    final docAsync =
+        ref.watch(initialDocumentProvider);
+
     final editor = ref.watch(editorControllerProvider);
     final controller = ref.read(editorControllerProvider.notifier);
 
@@ -55,14 +68,16 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       final selectedId = ids.last;
       final found = controller.findByClientId(selectedId);
       selectedBlock = found?.block;
-      // if (ids.length <= 1) selectedBlock = null;
     }
 
     return docAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
       error: (e, st) => Scaffold(
-        appBar: AppBar(title: const Text('Editor')),
+        appBar: AppBar(
+          title: Text('Editor • ${widget.postType.name} #${widget.postId}'),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: Text('Failed to load document: $e'),
@@ -71,7 +86,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       data: (_) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Editor'),
+            title: Text('Editor • ${widget.postType.name} #${widget.postId}'),
             actions: [
               IconButton(
                 tooltip: 'Toggle settings',
@@ -95,10 +110,8 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                 onSelectPost: () {
                   controller.setSelectionPath(const WpBlockPath(clientIds: []));
                   controller.focusBlock(null);
-                  // uiController.openInspector();
                 },
                 onSelectClientId: (clientId) {
-                  debugPrint('i selected: ${clientId}');
                   final found = controller.findByClientId(clientId);
                   if (found == null) return;
                   controller.setSelectionPath(found.path);
@@ -117,7 +130,6 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                 onFocusBlock: controller.focusBlock,
                 onUpdateAttributes: controller.updateBlockAttributes,
               ),
-
               EditorInspectorPanel(
                 isOpen: ui.isInspectorOpen,
                 onClose: uiController.closeInspector,
@@ -162,10 +174,12 @@ class _BreadcrumbBar extends StatelessWidget {
           ? Text(
               'Tap a block to select',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.color?.withOpacity(0.7),
-              ),
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.color
+                        ?.withOpacity(0.7),
+                  ),
             )
           : SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -173,7 +187,7 @@ class _BreadcrumbBar extends StatelessWidget {
                 children: [
                   _Crumb(
                     label: 'Post',
-                    onTap: onSelectPost, // ✅ clears selection
+                    onTap: onSelectPost,
                   ),
                   for (final id in ids) ...[
                     const Padding(
@@ -209,9 +223,10 @@ class _Crumb extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         child: Text(
           label,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -229,8 +244,7 @@ class _DocumentView extends StatelessWidget {
   final void Function({
     required String clientId,
     required Map<String, dynamic> attributesPatch,
-  })
-  onUpdateAttributes;
+  }) onUpdateAttributes;
 
   const _DocumentView({
     required this.document,
@@ -275,8 +289,7 @@ class _BlockNode extends StatelessWidget {
   final void Function({
     required String clientId,
     required Map<String, dynamic> attributesPatch,
-  })
-  onUpdateAttributes;
+  }) onUpdateAttributes;
 
   const _BlockNode({
     required this.block,
@@ -294,8 +307,7 @@ class _BlockNode extends StatelessWidget {
     final path = WpBlockPath(
       clientIds: [...parentPath.clientIds, block.clientId],
     );
-    final isSelected =
-        selectionPath.clientIds.isNotEmpty &&
+    final isSelected = selectionPath.clientIds.isNotEmpty &&
         selectionPath.clientIds.last == block.clientId;
 
     final spec = getBlockSpec(block.name);
@@ -319,7 +331,6 @@ class _BlockNode extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           onTap: () {
             onSelectBlock(path);
-            // If leaf text block, focus it for typing behavior (handled inside leaf widget).
             if ((spec?.supports.richText ?? false) == true) {
               onFocusBlock(block.clientId);
             } else {
@@ -342,8 +353,6 @@ class _BlockNode extends StatelessWidget {
                   showContainerChrome: showContainerChrome,
                 ),
                 const SizedBox(height: 8),
-
-                // Render leaf or container body
                 if ((spec?.isContainer ?? false) ||
                     block.innerBlocks.isNotEmpty)
                   _ContainerBody(
@@ -372,6 +381,8 @@ class _BlockNode extends StatelessWidget {
   }
 }
 
+// --- Everything below here is unchanged from your original file ---
+
 class _BlockHeader extends StatelessWidget {
   final String name;
   final bool isContainer;
@@ -397,9 +408,10 @@ class _BlockHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         if (showContainerChrome)
@@ -411,9 +423,10 @@ class _BlockHeader extends StatelessWidget {
             ),
             child: Text(
               'Layout',
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
       ],
@@ -433,8 +446,7 @@ class _ContainerBody extends StatelessWidget {
   final void Function({
     required String clientId,
     required Map<String, dynamic> attributesPatch,
-  })
-  onUpdateAttributes;
+  }) onUpdateAttributes;
 
   const _ContainerBody({
     required this.block,
@@ -449,7 +461,6 @@ class _ContainerBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Special case: core/columns render horizontally (mobile can stack later).
     if (block.name == CoreBlockNames.columns) {
       return _ColumnsView(
         columnsBlock: block,
@@ -463,7 +474,6 @@ class _ContainerBody extends StatelessWidget {
       );
     }
 
-    // Generic container: vertical stack.
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -503,8 +513,7 @@ class _ColumnsView extends StatelessWidget {
   final void Function({
     required String clientId,
     required Map<String, dynamic> attributesPatch,
-  })
-  onUpdateAttributes;
+  }) onUpdateAttributes;
 
   const _ColumnsView({
     required this.columnsBlock,
@@ -528,8 +537,8 @@ class _ColumnsView extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isNarrow = constraints.maxWidth < 520; // tweak threshold
-        final useCompact = isLayoutMode || isNarrow; // your rule
+        final isNarrow = constraints.maxWidth < 520;
+        final useCompact = isLayoutMode || isNarrow;
 
         if (useCompact) {
           return _ColumnsCompactView(
@@ -544,7 +553,6 @@ class _ColumnsView extends StatelessWidget {
           );
         }
 
-        // Existing wide/full view
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -581,7 +589,6 @@ class _ColumnsView extends StatelessWidget {
 
   int _widthToFlex(List<double>? widths, int i) {
     if (widths == null || widths.length <= i) return 1;
-    // Scale to a reasonable flex range
     final w = widths[i].clamp(0.05, 0.95);
     return (w * 1000).round();
   }
@@ -599,8 +606,7 @@ class _ColumnsCompactView extends StatelessWidget {
   final void Function({
     required String clientId,
     required Map<String, dynamic> attributesPatch,
-  })
-  onUpdateAttributes;
+  }) onUpdateAttributes;
 
   const _ColumnsCompactView({
     required this.columnsBlock,
@@ -655,8 +661,7 @@ class _ColumnPanel extends StatelessWidget {
       clientIds: [...parentPath.clientIds, columnBlock.clientId],
     );
 
-    final isSelected =
-        selectionPath.clientIds.isNotEmpty &&
+    final isSelected = selectionPath.clientIds.isNotEmpty &&
         selectionPath.clientIds.last == columnBlock.clientId;
 
     return Container(
@@ -673,7 +678,6 @@ class _ColumnPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Column header
           Row(
             children: [
               const Icon(Icons.view_column, size: 18),
@@ -681,9 +685,10 @@ class _ColumnPanel extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Column ${columnIndex + 1}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w800),
                 ),
               ),
               IconButton(
@@ -694,8 +699,6 @@ class _ColumnPanel extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-
-          // Icon-only summary of inner blocks
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -706,8 +709,7 @@ class _ColumnPanel extends StatelessWidget {
                   path: WpBlockPath(
                     clientIds: [...columnPath.clientIds, child.clientId],
                   ),
-                  isSelected:
-                      selectionPath.clientIds.isNotEmpty &&
+                  isSelected: selectionPath.clientIds.isNotEmpty &&
                       selectionPath.clientIds.last == child.clientId,
                   onTap: () => onSelectBlock(
                     WpBlockPath(
@@ -765,9 +767,10 @@ class _BlockIconChip extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               blockRegistry[block.name]?.title ?? block.name,
-              style: Theme.of(
-                context,
-              ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -793,8 +796,7 @@ class _LeafBody extends StatelessWidget {
   final void Function({
     required String clientId,
     required Map<String, dynamic> attributesPatch,
-  })
-  onUpdateAttributes;
+  }) onUpdateAttributes;
 
   const _LeafBody({
     required this.block,
@@ -805,7 +807,6 @@ class _LeafBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MVP: support paragraph + heading content editing via TextField.
     final isParagraph = block.name == CoreBlockNames.paragraph;
     final isHeading = block.name == CoreBlockNames.heading;
 
@@ -824,9 +825,10 @@ class _LeafBody extends StatelessWidget {
       maxLines: null,
       textInputAction: TextInputAction.newline,
       style: isHeading
-          ? Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)
+          ? Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.w800)
           : Theme.of(context).textTheme.bodyLarge,
       decoration: const InputDecoration(
         isDense: true,
