@@ -8,7 +8,13 @@ First iteration will work with the WordPress API and editor to give a better way
 
 ## WIP
 
-### Screen 1
+### Add Site
+<img width="492" height="364" alt="editor-add-site" src="https://github.com/user-attachments/assets/58cd287e-a9c6-4089-af04-600ddd7f474f" />
+
+### Content Select
+<img width="462" height="762" alt="editor-content-select" src="https://github.com/user-attachments/assets/8bc1896e-e67b-410e-a666-fa449acdd2b9" />
+
+### Editor Screen
 
 <img width="200" alt="editor-screen" src="https://github.com/user-attachments/assets/bad9cec2-4b83-447e-9a77-62492752ca65" />
 
