@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WpDocument {
 
- List<WpBlock> get blocks; Map<String, dynamic> get meta;
+ int get postId; String get postTypeRestBase; String get title; String get rawContent; List<WpBlock> get blocks; Map<String, dynamic> get meta;
 /// Create a copy of WpDocument
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $WpDocumentCopyWith<WpDocument> get copyWith => _$WpDocumentCopyWithImpl<WpDocum
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WpDocument&&const DeepCollectionEquality().equals(other.blocks, blocks)&&const DeepCollectionEquality().equals(other.meta, meta));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WpDocument&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.postTypeRestBase, postTypeRestBase) || other.postTypeRestBase == postTypeRestBase)&&(identical(other.title, title) || other.title == title)&&(identical(other.rawContent, rawContent) || other.rawContent == rawContent)&&const DeepCollectionEquality().equals(other.blocks, blocks)&&const DeepCollectionEquality().equals(other.meta, meta));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(blocks),const DeepCollectionEquality().hash(meta));
+int get hashCode => Object.hash(runtimeType,postId,postTypeRestBase,title,rawContent,const DeepCollectionEquality().hash(blocks),const DeepCollectionEquality().hash(meta));
 
 @override
 String toString() {
-  return 'WpDocument(blocks: $blocks, meta: $meta)';
+  return 'WpDocument(postId: $postId, postTypeRestBase: $postTypeRestBase, title: $title, rawContent: $rawContent, blocks: $blocks, meta: $meta)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $WpDocumentCopyWith<$Res>  {
   factory $WpDocumentCopyWith(WpDocument value, $Res Function(WpDocument) _then) = _$WpDocumentCopyWithImpl;
 @useResult
 $Res call({
- List<WpBlock> blocks, Map<String, dynamic> meta
+ int postId, String postTypeRestBase, String title, String rawContent, List<WpBlock> blocks, Map<String, dynamic> meta
 });
 
 
@@ -65,9 +65,13 @@ class _$WpDocumentCopyWithImpl<$Res>
 
 /// Create a copy of WpDocument
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? blocks = null,Object? meta = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? postId = null,Object? postTypeRestBase = null,Object? title = null,Object? rawContent = null,Object? blocks = null,Object? meta = null,}) {
   return _then(_self.copyWith(
-blocks: null == blocks ? _self.blocks : blocks // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,postTypeRestBase: null == postTypeRestBase ? _self.postTypeRestBase : postTypeRestBase // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,rawContent: null == rawContent ? _self.rawContent : rawContent // ignore: cast_nullable_to_non_nullable
+as String,blocks: null == blocks ? _self.blocks : blocks // ignore: cast_nullable_to_non_nullable
 as List<WpBlock>,meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
@@ -151,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WpBlock> blocks,  Map<String, dynamic> meta)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int postId,  String postTypeRestBase,  String title,  String rawContent,  List<WpBlock> blocks,  Map<String, dynamic> meta)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WpDocument() when $default != null:
-return $default(_that.blocks,_that.meta);case _:
+return $default(_that.postId,_that.postTypeRestBase,_that.title,_that.rawContent,_that.blocks,_that.meta);case _:
   return orElse();
 
 }
@@ -172,10 +176,10 @@ return $default(_that.blocks,_that.meta);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WpBlock> blocks,  Map<String, dynamic> meta)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int postId,  String postTypeRestBase,  String title,  String rawContent,  List<WpBlock> blocks,  Map<String, dynamic> meta)  $default,) {final _that = this;
 switch (_that) {
 case _WpDocument():
-return $default(_that.blocks,_that.meta);}
+return $default(_that.postId,_that.postTypeRestBase,_that.title,_that.rawContent,_that.blocks,_that.meta);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -189,10 +193,10 @@ return $default(_that.blocks,_that.meta);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WpBlock> blocks,  Map<String, dynamic> meta)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int postId,  String postTypeRestBase,  String title,  String rawContent,  List<WpBlock> blocks,  Map<String, dynamic> meta)?  $default,) {final _that = this;
 switch (_that) {
 case _WpDocument() when $default != null:
-return $default(_that.blocks,_that.meta);case _:
+return $default(_that.postId,_that.postTypeRestBase,_that.title,_that.rawContent,_that.blocks,_that.meta);case _:
   return null;
 
 }
@@ -203,10 +207,14 @@ return $default(_that.blocks,_that.meta);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _WpDocument implements WpDocument {
-  const _WpDocument({final  List<WpBlock> blocks = const <WpBlock>[], final  Map<String, dynamic> meta = const <String, dynamic>{}}): _blocks = blocks,_meta = meta;
+class _WpDocument extends WpDocument {
+  const _WpDocument({required this.postId, required this.postTypeRestBase, required this.title, required this.rawContent, final  List<WpBlock> blocks = const <WpBlock>[], final  Map<String, dynamic> meta = const <String, dynamic>{}}): _blocks = blocks,_meta = meta,super._();
   factory _WpDocument.fromJson(Map<String, dynamic> json) => _$WpDocumentFromJson(json);
 
+@override final  int postId;
+@override final  String postTypeRestBase;
+@override final  String title;
+@override final  String rawContent;
  final  List<WpBlock> _blocks;
 @override@JsonKey() List<WpBlock> get blocks {
   if (_blocks is EqualUnmodifiableListView) return _blocks;
@@ -235,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WpDocument&&const DeepCollectionEquality().equals(other._blocks, _blocks)&&const DeepCollectionEquality().equals(other._meta, _meta));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WpDocument&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.postTypeRestBase, postTypeRestBase) || other.postTypeRestBase == postTypeRestBase)&&(identical(other.title, title) || other.title == title)&&(identical(other.rawContent, rawContent) || other.rawContent == rawContent)&&const DeepCollectionEquality().equals(other._blocks, _blocks)&&const DeepCollectionEquality().equals(other._meta, _meta));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_blocks),const DeepCollectionEquality().hash(_meta));
+int get hashCode => Object.hash(runtimeType,postId,postTypeRestBase,title,rawContent,const DeepCollectionEquality().hash(_blocks),const DeepCollectionEquality().hash(_meta));
 
 @override
 String toString() {
-  return 'WpDocument(blocks: $blocks, meta: $meta)';
+  return 'WpDocument(postId: $postId, postTypeRestBase: $postTypeRestBase, title: $title, rawContent: $rawContent, blocks: $blocks, meta: $meta)';
 }
 
 
@@ -255,7 +263,7 @@ abstract mixin class _$WpDocumentCopyWith<$Res> implements $WpDocumentCopyWith<$
   factory _$WpDocumentCopyWith(_WpDocument value, $Res Function(_WpDocument) _then) = __$WpDocumentCopyWithImpl;
 @override @useResult
 $Res call({
- List<WpBlock> blocks, Map<String, dynamic> meta
+ int postId, String postTypeRestBase, String title, String rawContent, List<WpBlock> blocks, Map<String, dynamic> meta
 });
 
 
@@ -272,9 +280,13 @@ class __$WpDocumentCopyWithImpl<$Res>
 
 /// Create a copy of WpDocument
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? blocks = null,Object? meta = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? postTypeRestBase = null,Object? title = null,Object? rawContent = null,Object? blocks = null,Object? meta = null,}) {
   return _then(_WpDocument(
-blocks: null == blocks ? _self._blocks : blocks // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,postTypeRestBase: null == postTypeRestBase ? _self.postTypeRestBase : postTypeRestBase // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,rawContent: null == rawContent ? _self.rawContent : rawContent // ignore: cast_nullable_to_non_nullable
+as String,blocks: null == blocks ? _self._blocks : blocks // ignore: cast_nullable_to_non_nullable
 as List<WpBlock>,meta: null == meta ? _self._meta : meta // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));

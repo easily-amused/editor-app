@@ -6,8 +6,7 @@ import '../wp_api/content_providers.dart';
 import '../wp_api/models/wp_post_type.dart';
 import '../editor/editor_screen.dart';
 
-// ✅ add these imports based on where you put them
-import '../auth/providers.dart'; // sessionControllerProvider, activeSiteProvider
+import '../auth/providers.dart';
 import '../auth/models/wp_site_account.dart';
 
 class _SitesSheet extends ConsumerWidget {
@@ -118,7 +117,6 @@ class ContentPickerScreen extends ConsumerWidget {
 
           final effectiveSiteId = (activeSite?.id ?? sites.first.id);
 
-          // Now render the rest as you already do:
           return typesAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, st) =>
@@ -142,7 +140,6 @@ class ContentPickerScreen extends ConsumerWidget {
 
               final effectiveType = selectedType ?? defaultType;
 
-              // Auto-select first type on first load
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 final cur = ref.read(selectedPostTypeProvider);
                 if (cur == null) {
@@ -193,7 +190,6 @@ class ContentPickerScreen extends ConsumerWidget {
                     ),
                   ),
 
-                  // your existing POST TYPE DROPDOWN
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: DropdownButtonFormField<WpPostType>(
@@ -260,7 +256,11 @@ class _PostsList extends ConsumerWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => EditorScreen(postType: type, postId: p.id),
+                    builder: (_) => EditorScreen(
+                      key: ValueKey('editor-$type-${p.id}'),
+                      postType: type,
+                      postId: p.id,
+                    ),
                   ),
                 );
               },

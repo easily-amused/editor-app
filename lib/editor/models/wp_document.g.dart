@@ -7,6 +7,10 @@ part of 'wp_document.dart';
 // **************************************************************************
 
 _WpDocument _$WpDocumentFromJson(Map<String, dynamic> json) => _WpDocument(
+  postId: (json['postId'] as num).toInt(),
+  postTypeRestBase: json['postTypeRestBase'] as String,
+  title: json['title'] as String,
+  rawContent: json['rawContent'] as String,
   blocks:
       (json['blocks'] as List<dynamic>?)
           ?.map((e) => WpBlock.fromJson(e as Map<String, dynamic>))
@@ -16,4 +20,11 @@ _WpDocument _$WpDocumentFromJson(Map<String, dynamic> json) => _WpDocument(
 );
 
 Map<String, dynamic> _$WpDocumentToJson(_WpDocument instance) =>
-    <String, dynamic>{'blocks': instance.blocks, 'meta': instance.meta};
+    <String, dynamic>{
+      'postId': instance.postId,
+      'postTypeRestBase': instance.postTypeRestBase,
+      'title': instance.title,
+      'rawContent': instance.rawContent,
+      'blocks': instance.blocks,
+      'meta': instance.meta,
+    };

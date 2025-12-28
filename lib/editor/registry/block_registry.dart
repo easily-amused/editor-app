@@ -47,7 +47,7 @@ class BlockSpec {
   }
 }
 
-abstract class CoreBlockNames {
+abstract class CoreBlockNames{
   static const paragraph = 'core/paragraph';
   static const heading = 'core/heading';
   static const image = 'core/image';
@@ -58,6 +58,7 @@ abstract class CoreBlockNames {
   static const column = 'core/column';
   static const spacer = 'core/spacer';
   static const separator = 'core/separator';
+  static const cover = 'core/cover';
 }
 
 final Map<String, BlockSpec> blockRegistry = <String, BlockSpec>{

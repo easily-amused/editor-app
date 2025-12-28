@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -10,19 +11,24 @@ import '../registry/block_registry.dart';
 import 'editor_state.dart';
 
 final editorControllerProvider =
-    NotifierProvider<EditorController, EditorState>(EditorController.new);
+    NotifierProvider.autoDispose<EditorController, EditorState>(
+      EditorController.new,
+    );
 
 class EditorController extends Notifier<EditorState> {
   final _uuid = const Uuid();
+  WpBlock? get selectedBlock => getSelectedBlock(state.selectionPath);
 
   @override
   EditorState build() {
-    return EditorState(document: const WpDocument(blocks: []));
+    return EditorState(document: WpDocument.empty());
   }
 
-  // ---------------------------
-  // UI state helpers
-  // ---------------------------
+  void updateRawContent(String value) {
+    state = state.copyWith(
+      document: state.document.copyWith(rawContent: value),
+    );
+  }
 
   void setLayoutMode(bool value) {
     state = state.copyWith(isLayoutMode: value);
@@ -36,12 +42,6 @@ class EditorController extends Notifier<EditorState> {
     state = state.copyWith(focusedClientId: clientId);
   }
 
-  // ---------------------------
-  // Tree querying
-  // ---------------------------
-
-  /// Find a block and its path from root (inclusive), by clientId.
-  /// Returns null if not found.
   ({WpBlock block, WpBlockPath path})? findByClientId(String clientId) {
     final roots = state.document.blocks;
     for (final root in roots) {
@@ -93,10 +93,6 @@ class EditorController extends Notifier<EditorState> {
     }
     return null;
   }
-
-  // ---------------------------
-  // Core mutations (parity-first)
-  // ---------------------------
 
   WpBlock createBlock(
     String name, {
@@ -326,10 +322,11 @@ class EditorController extends Notifier<EditorState> {
 
   bool _hydrated = false;
 
-  /// Hydrate editor state from an API-loaded document (one-time).
-  /// WWMD: document model is canonical; UI should not own this.
   void hydrateFromApi(WpDocument document) {
     if (_hydrated) return;
+    debugPrint(
+      '🧠 hydrateFromApi: current=${state.document.postId} -> next=${document.postId}',
+    );
     _hydrated = true;
 
     state = state.copyWith(
@@ -354,6 +351,15 @@ class EditorController extends Notifier<EditorState> {
     _replaceBlock(updated);
   }
 
+  void selectPath(WpBlockPath path) {
+    state = state.copyWith(selectionPath: path);
+  }
+
+  void clearSelection() {
+    state = state.copyWith(selectionPath: const WpBlockPath(clientIds: []));
+    // or null if you switch to nullable
+  }
+  
   WpBlock? getSelectedBlock(WpBlockPath selectionPath) {
     if (selectionPath.clientIds.isEmpty) return null;
     final selectedId = selectionPath.clientIds.last;

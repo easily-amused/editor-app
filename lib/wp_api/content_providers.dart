@@ -25,7 +25,6 @@ final postTypesProvider = FutureProvider<List<WpPostType>>((ref) async {
     final v = (entry.value as Map).cast<String, dynamic>();
 
     final showInRest = v['viewable'];
-    debugPrint('${v['name']} - ${showInRest}');
     final isRestEnabled = showInRest == true || showInRest is Map;
 
     if (!isRestEnabled) continue;
@@ -41,8 +40,6 @@ final postTypesProvider = FutureProvider<List<WpPostType>>((ref) async {
 
     types.add(WpPostType(slug: slug, name: name, restBase: restBase));
   }
-
-  debugPrint('types found ${types.length}');
 
   types.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   return types;

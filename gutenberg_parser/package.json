@@ -1,0 +1,14 @@
+{
+  "name": "gutenberg_parser",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/index.js --bundle --platform=node --format=iife --global-name=GutenbergParser --outfile=dist/bundle.js"
+  },
+  "dependencies": {
+    "@wordpress/block-serialization-default-parser": "^5.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.0"
+  }
+}
